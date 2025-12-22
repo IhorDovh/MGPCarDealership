@@ -514,26 +514,32 @@
             const isMobile = window.innerWidth <= 768;
             const carCards = document.querySelectorAll('.car-card');
             
-            if (isMobile && !observer) {
+            // Завжди очищаємо попередній спостерігач, щоб уникнути дублювання або спостереження за видаленими елементами
+            if (observer) {
+                observer.disconnect();
+                observer = null;
+            }
+
+            if (isMobile) {
                 const observerOptions = {
-                    threshold: 0.2,
-                    rootMargin: '0px 0px -100px 0px'
+                    threshold: 0.1, // Зменшений поріг для швидшої реакції
+                    rootMargin: '50px' // Починаємо завантажувати трохи раніше, ніж елемент з'явиться
                 };
 
                 observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
                             entry.target.classList.add('in-view');
-                        } else {
-                            entry.target.classList.remove('in-view');
+                            // ОПТИМІЗАЦІЯ: перестаємо спостерігати за елементом після того, як він з'явився.
+                            // Це зменшує навантаження на процесор телефону.
+                            observer.unobserve(entry.target);
                         }
                     });
                 }, observerOptions);
 
                 carCards.forEach(card => observer.observe(card));
-            } else if (!isMobile && observer) {
-                observer.disconnect();
-                observer = null;
+            } else {
+                // На десктопі прибираємо клас анімації, щоб не було конфліктів з ховером
                 carCards.forEach(card => card.classList.remove('in-view'));
             }
         }
