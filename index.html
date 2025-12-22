@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MGP Car Dealership - Premium Auto</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="scanlines"></div>
+    
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>MGP<span>CAR DEALERSHIP</span></h1>
+            </div>
+            <nav>
+                <a href="index.html" class="nav-btn active">
+                    <span>Каталог</span>
+                    <div class="shimmer">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </a>
+                <a href="about.html" class="nav-btn">
+                    <span>Про нас</span>
+                    <div class="shimmer">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h2>ЕКСКЛЮЗИВНІ АВТОМОБІЛІ</h2>
+            <p>Найкращі суперкари для тих, хто знає ціну швидкості</p>
+        </div>
+    </section>
+
+    <section class="filters">
+        <div class="container">
+            <!-- Фільтри будуть згенеровані динамічно -->
+        </div>
+    </section>
+
+    <section class="catalog">
+        <div class="container">
+            <div class="car-grid" id="carGrid">
+                <!-- Картки автомобілів будуть згенеровані динамічно -->
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 1925 MGP Car Dealership. Всі права захищено.</p>
+            <p class="footer-note">Ціни вказані в алмазах 💎 і можуть змінюватися</p>
+        </div>
+    </footer>
+
+    <script>
+        // Дані про автомобілі
+        const carsData = [
+            {
+                id: 1,
+                brand: 'KABRIK',
+                model: 'KABRIK LUXURY',
+                category: 'Кабріолети',
+                price: 160,
+                oldPrice: null,
+                dateAdded: '2025-12-22',
+                colors: [
+                    { name: 'Будь-який колір', value: 'rainbow', tooltip: 'Доступні всі кольори' }
+                ],
+                images: [
+                    'https://media.discordapp.net/attachments/1432854228262715402/1452755993921323211/2025-12-22_22.09.36.png?ex=694af7f3&is=6949a673&hm=ee403a3fe5ea46c98ebb05ad8ef550c150e09dba06fb91dce461ec42bb7499dd&=&format=webp&quality=lossless&width=1534&height=800',
+                    'https://cdn.discordapp.com/attachments/1432854228262715402/1452755994718503012/2025-12-22_22.10.21.png?ex=694af7f4&is=6949a674&hm=f2bdb961e121561b2e0e07b7ac06f889f29ed679fb6f5a90500b50ba018e1436&'
+                ],
+                gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+            },
+            {
+                id: 2,
+                brand: 'STOSOBIKE',
+                model: 'STOSOBIKE SPORT',
+                category: 'Мотоцикли',
+                price: 192,
+                oldPrice: null,
+                dateAdded: '2025-12-22',
+                colors: [
+                    { name: 'Червоний', value: '#ff0000', tooltip: 'Червоний' }
+                ],
+                images: [
+                    'https://cdn.discordapp.com/attachments/1432854228262715402/1452756964567290046/2025-12-22_22.16.53.png?ex=694af8db&is=6949a75b&hm=4b85e15aa1a5670dd051908701352c977267ec004a2493f53f9d496b3eff44ce&',
+                    'https://cdn.discordapp.com/attachments/1432854228262715402/1452756965267607642/2025-12-22_22.17.01.png?ex=694af8db&is=6949a75b&hm=0a71ca866d3b5204c2533feb0dfa3758649d8300856f5a584c4081c89f2238ce&'
+                ],
+                gradient: 'linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%)'
+            },
+            {
+                id: 3,
+                brand: 'GRUB',
+                model: 'GRUB SEDAN',
+                category: 'Седани',
+                price: 96,
+                oldPrice: null,
+                dateAdded: '2025-12-22',
+                colors: [
+                    { name: 'Андезит', value: '#5f6e72', tooltip: 'Андезит' },
+                    { name: 'Латунь', value: '#b5a642', tooltip: 'Латунь' }
+                ],
+                images: [
+                    'https://cdn.discordapp.com/attachments/1432854228262715402/1452757458379477196/2025-12-22_22.18.34.png?ex=694af951&is=6949a7d1&hm=791ac1540a8e9ca5e584a337bc5253a0eed3f4994197670fe5fa410807fa4130&',
+                    'https://cdn.discordapp.com/attachments/1432854228262715402/1452757458849108138/2025-12-22_22.19.02.png?ex=694af951&is=6949a7d1&hm=bb7c37f43e4fb0682def96194fb8aa5576bcb3e33207d77c9c03caf5df058ad2&',
+                    'https://cdn.discordapp.com/attachments/1432854228262715402/1452760156390559886/image.png?ex=694afbd4&is=6949aa54&hm=e2982707886c13da8c5aeda2ef272c6c56503af6ec5ec22c750b2d1e918147ad&'
+                ],
+                gradient: 'linear-gradient(135deg, #2c3e50 0%, #bdc3c7 100%)'
+            },
+            {
+                id: 4,
+                brand: 'MINI',
+                model: 'MINI CUPER',
+                category: 'Кабріолети',
+                price: 128,
+                oldPrice: null,
+                dateAdded: '2025-12-22',
+                colors: [
+                    { name: 'Будь-який колір', value: 'rainbow', tooltip: 'Доступні всі кольори' }
+                ],
+                images: [
+                    'https://cdn.discordapp.com/attachments/1432854228262715402/1452760525938102483/2025-12-22_22.26.02.png?ex=694afc2c&is=6949aaac&hm=8d53851c49e24d4e30029647ca2ad24ef72b645a47284243e8c0387230cec7c0&'
+                ],
+                gradient: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)'
+            },
+            {
+                id: 5,
+                brand: 'LOUNGE',
+                model: 'LOUNGE CABRIO',
+                category: 'Кабріолети',
+                price: 192,
+                oldPrice: null,
+                dateAdded: '2025-12-22',
+                colors: [
+                    { name: 'Чорний', value: '#000000', tooltip: 'Чорний' },
+                    { name: 'Голубий', value: '#00BFFF', tooltip: 'Голубий' }
+                ],
+                images: [
+                    'https://cdn.discordapp.com/attachments/1432854228262715402/1452761378833043668/2025-12-22_22.34.19.png?ex=694afcf7&is=6949ab77&hm=4e66036a804b2a015632ee3c010afdd80e628cef09e1d99f656151194d271093&',
+                    'https://cdn.discordapp.com/attachments/1432854228262715402/1452761379382497403/2025-12-22_22.34.33.png?ex=694afcf7&is=6949ab77&hm=367505363327720a0d385944442e1c45284682f87730594cda8a7c9d0875dd8b&'
+                ],
+                gradient: 'linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)'
+            },
+            {
+                id: 6,
+                brand: 'TRINDULET',
+                model: 'TRINDULET CLASSIC',
+                category: 'Седани',
+                price: 35,
+                oldPrice: null,
+                dateAdded: '2025-12-22',
+                colors: [
+                    { name: 'Андезит', value: '#5f6e72', tooltip: 'Андезит' },
+                    { name: 'Латунь', value: '#b5a642', tooltip: 'Латунь' }
+                ],
+                images: [
+                    'https://cdn.discordapp.com/attachments/1432854228262715402/1452762156712988785/2025-12-22_22.37.38.png?ex=694afdb1&is=6949ac31&hm=bd7dbe5a226d9d7bb446cd52c6b828d2727639a8ee20836feda917390b85c443&',
+                    'https://cdn.discordapp.com/attachments/1432854228262715402/1452762157228884058/2025-12-22_22.37.51.png?ex=694afdb1&is=6949ac31&hm=b9a90c19bc7e06ad461afe4a75f7f805aa493ffe64a02cf25e716609a25a7136&'
+                ],
+                gradient: 'linear-gradient(135deg, #8e9eab 0%, #eef2f3 100%)'
+            },
+            {
+                id: 7,
+                brand: 'RENZHROWER',
+                model: 'RENZHROWER ELITE',
+                category: 'Седани',
+                price: 128,
+                oldPrice: null,
+                dateAdded: '2025-12-22',
+                colors: [
+                    { name: 'Будь-який колір', value: 'rainbow', tooltip: 'Доступні всі кольори' }
+                ],
+                images: [
+                    'https://cdn.discordapp.com/attachments/1432854228262715402/1452764147770064997/2025-12-22_22.45.16.png?ex=694aff8b&is=6949ae0b&hm=6195e60f4862c0f91679542d0979c0e1f9bb2224be4d37dbd213052d6df70e89&',
+                    'https://cdn.discordapp.com/attachments/1432854228262715402/1452764148256477347/2025-12-22_22.45.38.png?ex=694aff8b&is=6949ae0b&hm=0433f0e7324dcd0266c28f2e3d87078a813ea54536f8ae979265706a51f4069c&'
+                ],
+                gradient: 'linear-gradient(135deg, #000000 0%, #434343 100%)'
+            },
+            {
+                id: 8,
+                brand: 'CADILAC',
+                model: 'CADILAC V16',
+                category: 'Седани',
+                price: 160,
+                oldPrice: null,
+                dateAdded: '2025-12-22',
+                colors: [
+                    { name: 'Сірий і червоний', value: 'linear-gradient(to right, gray, red)', tooltip: 'Сірий і червоний' },
+                    { name: 'Синій і жовтий', value: 'linear-gradient(to right, blue, yellow)', tooltip: 'Синій і жовтий' }
+                ],
+                images: [
+                    'https://cdn.discordapp.com/attachments/1432854228262715402/1452765492363268208/2025-12-22_22.50.14.png?ex=694b00cc&is=6949af4c&hm=79fb7827db6bbec33b9e70f8c0fa47cc200a5a0619c8882a15c6b743451bc0df&',
+                    'https://cdn.discordapp.com/attachments/1432854228262715402/1452765493017579742/2025-12-22_22.50.50.png?ex=694b00cc&is=6949af4c&hm=fef334d06ad622b6c01b1102d2c1dd86976120cc00c90238ae684445ec09565a&'
+                ],
+                gradient: 'linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%)'
+            },
+            {
+                id: 9,
+                brand: 'LANCIA',
+                model: 'LANCIA LAMBDA',
+                category: 'Кабріолети',
+                price: 224,
+                oldPrice: null,
+                dateAdded: '2025-12-22',
+                colors: [
+                    { name: 'Будь-який колір', value: 'rainbow', tooltip: 'Доступні всі кольори' }
+                ],
+                images: [
+                    'https://cdn.discordapp.com/attachments/1432854228262715402/1452766264513663088/2025-12-22_22.53.55.png?ex=694b0184&is=6949b004&hm=9589e1e1f33f3cee81c6677f9aea9496f3fa10c0e475f4454913ef6b11c48840&',
+                    'https://cdn.discordapp.com/attachments/1432854228262715402/1452766265331683428/2025-12-22_22.54.11.png?ex=694b0184&is=6949b004&hm=ed3c6ac2bc133a22f7f0f88e7bcc30a7cb14aa49d2680c1d08d7b53a943aa4b0&'
+                ],
+                gradient: 'linear-gradient(135deg, #13547a 0%, #80d0c7 100%)'
+            },
+            {
+                id: 10,
+                brand: 'LIMUSIN',
+                model: 'LIMUSIN LUX',
+                category: 'Лімузини',
+                price: 640,
+                oldPrice: null,
+                dateAdded: '2025-12-22',
+                colors: [
+                    { name: 'Будь-який колір', value: 'rainbow', tooltip: 'Доступні всі кольори' }
+                ],
+                images: [
+                    'https://cdn.discordapp.com/attachments/1432854228262715402/1452767939592847400/2025-12-22_23.00.26.png?ex=694b0313&is=6949b193&hm=3ad839f90f17cb29a940ba1b50b834e8d9073ebd74452bd81803be810fc6cc8e&',
+                    'https://cdn.discordapp.com/attachments/1432854228262715402/1452767940146626721/2025-12-22_23.00.46.png?ex=694b0314&is=6949b194&hm=08c4d8722605f0e074699db7e3c06f72e31b9d37a3d4510bd29a57e9f654fd8e&'
+                ],
+                gradient: 'linear-gradient(135deg, #232526 0%, #414345 100%)'
+            }
+        ];
+
+        // Категорії для фільтрів
+        const categories = ['Всі', 'Седани', 'Мотоцикли', 'Кабріолети', 'Лімузини'];
+
+        // Поточний активний фільтр
+        let activeFilter = 'Всі';
+
+        // Функція перевірки чи автомобіль новий (менше тижня)
+        function isNewCar(dateAdded) {
+            const addedDate = new Date(dateAdded);
+            const today = new Date();
+            const diffTime = Math.abs(today - addedDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays <= 7;
+        }
+
+        // Функція перевірки чи є знижка
+        function hasDiscount(car) {
+            return car.oldPrice && car.oldPrice > car.price;
+        }
+
+        // Функція обчислення відсотка знижки
+        function getDiscountPercent(car) {
+            if (!hasDiscount(car)) return 0;
+            return Math.round(((car.oldPrice - car.price) / car.oldPrice) * 100);
+        }
+
+        // Функція отримання бейджа
+        function getCarBadge(car) {
+            // Пріоритет 1: Знижка -> HOT
+            if (hasDiscount(car)) {
+                return 'HOT';
+            }
+            // Пріоритет 2: Новий автомобіль -> NEW
+            if (isNewCar(car.dateAdded)) {
+                return 'NEW';
+            }
+            return null;
+        }
+
+        // Функція створення картки автомобіля
+        function createCarCard(car) {
+            const badge = getCarBadge(car);
+            const badgeHTML = badge ? `<div class="car-badge ${badge === 'HOT' ? 'hot' : ''}">${badge}</div>` : '';
+            const discount = hasDiscount(car);
+            const discountPercent = getDiscountPercent(car);
+            
+            // Визначаємо чи використовувати зображення чи градієнт
+            let imageHTML;
+            if (car.images && car.images.length > 0) {
+                // Слайдер зображень
+                const imagesHTML = car.images.map((img, index) => 
+                    `<div class="slider-image ${index === 0 ? 'active' : ''}" style="background-image: url('${img}');"></div>`
+                ).join('');
+                
+                const dotsHTML = car.images.length > 1 ? `
+                    <div class="slider-dots">
+                        ${car.images.map((_, index) => 
+                            `<span class="dot ${index === 0 ? 'active' : ''}" data-car="${car.id}" data-index="${index}"></span>`
+                        ).join('')}
+                    </div>
+                ` : '';
+                
+                // Додаємо data-атрибут з градієнтом
+                imageHTML = `
+                    <div class="car-slider" data-car-id="${car.id}" ${car.gradient ? `data-gradient="${car.gradient}"` : ''}>
+                        ${imagesHTML}
+                        ${dotsHTML}
+                    </div>
+                `;
+            } else {
+                // Градієнт
+                imageHTML = `
+                    <div class="placeholder-img" style="background: ${car.gradient};">
+                        <span>${car.brand}</span>
+                    </div>
+                `;
+            }
+            
+            // HTML для ціни зі знижкою
+            const priceHTML = discount ? `
+                <div class="price-wrapper">
+                    <div class="old-price-row">
+                        <span class="discount-badge">-${discountPercent}%</span>
+                        <span class="old-price">💎 ${car.oldPrice.toLocaleString()}</span>
+                    </div>
+                    <span class="price">💎 ${car.price.toLocaleString()}</span>
+                </div>
+            ` : `<span class="price">💎 ${car.price.toLocaleString()}</span>`;
+            
+            return `
+                <div class="car-card" ${car.gradient ? `data-car-gradient="${car.gradient}"` : ''}>
+                    <div class="card-glare-container"></div>
+                    <div class="car-image">
+                        ${imageHTML}
+                        ${badgeHTML}
+                    </div>
+                    <div class="car-info">
+                        <h3>${car.model}</h3>
+                        <p class="car-type">${car.category}</p>
+                        <div class="car-colors">
+                            <span class="colors-label">Доступні кольори:</span>
+                            <div class="color-palette">
+                                ${car.colors.map(color => {
+                                    if (color.value === 'rainbow') {
+                                        return `<div class="color-circle rainbow" data-tooltip="${color.tooltip}"></div>`;
+                                    } else {
+                                        return `<div class="color-circle" style="background: ${color.value};" data-tooltip="${color.tooltip}"></div>`;
+                                    }
+                                }).join('')}
+                            </div>
+                        </div>
+                        <div class="car-price">
+                            ${priceHTML}
+                            <button class="buy-btn" onclick="buyCar(${car.id})">
+                                <span>КУПИТИ ЗАРАЗ</span>
+                                <div class="shimmer"><div></div><div></div><div></div></div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Функція рендерингу автомобілів
+        function renderCars(filter = 'Всі') {
+            const carGrid = document.getElementById('carGrid');
+            const filteredCars = filter === 'Всі' 
+                ? carsData 
+                : carsData.filter(car => car.category === filter);
+            
+            carGrid.innerHTML = filteredCars.map(car => createCarCard(car)).join('');
+            
+            // Застосовуємо градієнти до car-card
+            document.querySelectorAll('.car-card[data-car-gradient]').forEach(card => {
+                const gradient = card.dataset.carGradient;
+                if (gradient) {
+                    card.style.setProperty('--car-gradient', gradient);
+                }
+            });
+            
+            // Ініціалізуємо слайдери
+            initSliders();
+            
+            // Перезапускаємо спостереження для мобільних
+            initMobileScrollEffects();
+            
+            // Додаємо ефект shimmer до нових кнопок
+            attachShimmerEffect();
+            
+            // Ініціалізуємо 3D ефект
+            init3DTiltEffect();
+        }
+
+        // Слайдери для автомобілів
+        let sliderIntervals = {};
+
+        function initSliders() {
+            // Очищаємо старі інтервали
+            Object.values(sliderIntervals).forEach(interval => clearInterval(interval));
+            sliderIntervals = {};
+
+            const sliders = document.querySelectorAll('.car-slider');
+            sliders.forEach(slider => {
+                const carId = slider.dataset.carId;
+                const gradient = slider.dataset.gradient;
+                
+                // Застосовуємо градієнт через inline style
+                if (gradient) {
+                    slider.style.setProperty('--slider-gradient', gradient);
+                    const beforeElement = document.createElement('div');
+                    beforeElement.className = 'slider-gradient-overlay';
+                    beforeElement.style.background = gradient;
+                    slider.insertBefore(beforeElement, slider.firstChild);
+                }
+                
+                const images = slider.querySelectorAll('.slider-image');
+                const dots = slider.querySelectorAll('.dot');
+                
+                if (images.length <= 1) return;
+
+                let currentIndex = 0;
+
+                // Автоматична зміна кожні 4 секунди
+                sliderIntervals[carId] = setInterval(() => {
+                    currentIndex = (currentIndex + 1) % images.length;
+                    updateSlider(images, dots, currentIndex);
+                }, 4000);
+
+                // Обробка кліків по точках
+                dots.forEach(dot => {
+                    dot.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        currentIndex = parseInt(dot.dataset.index);
+                        updateSlider(images, dots, currentIndex);
+                        
+                        // Перезапускаємо таймер
+                        clearInterval(sliderIntervals[carId]);
+                        sliderIntervals[carId] = setInterval(() => {
+                            currentIndex = (currentIndex + 1) % images.length;
+                            updateSlider(images, dots, currentIndex);
+                        }, 4000);
+                    });
+                });
+            });
+        }
+
+        function updateSlider(images, dots, index) {
+            images.forEach((img, i) => {
+                img.classList.toggle('active', i === index);
+            });
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+        }
+
+        // Функція рендерингу фільтрів
+        function renderFilters() {
+            const filtersContainer = document.querySelector('.filters .container');
+            filtersContainer.innerHTML = categories.map(category => 
+                `<button class="filter-btn ${category === activeFilter ? 'active' : ''}" 
+                         onclick="filterCars('${category}')">
+                    <div class="wrap">
+                        <p>
+                            <span>✧</span>
+                            <span>✦</span>
+                            ${category}
+                        </p>
+                    </div>
+                 </button>`
+            ).join('');
+        }
+
+        // Функція фільтрації
+        function filterCars(category) {
+            activeFilter = category;
+            renderFilters();
+            renderCars(category);
+        }
+
+        // Функція покупки (перехід на Google Form)
+        function buyCar(carId) {
+            const car = carsData.find(c => c.id === carId);
+            
+            // Відкриваємо Google Форму
+            const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSegTN49SJCwa9PiC0MumxqmjXYM5aWyRCuTMqza6RJlhdGDRw/viewform";
+            window.open(formUrl, '_blank');
+        }
+
+        // Позиціонування tooltip
+        function positionTooltip(event) {
+            const circle = event.target;
+            const rect = circle.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const topY = rect.top;
+            
+            circle.style.setProperty('--tooltip-x', `${centerX}px`);
+            circle.style.setProperty('--tooltip-y', `${topY}px`);
+        }
+
+        function resetTooltip(event) {
+            const circle = event.target;
+            circle.style.removeProperty('--tooltip-x');
+            circle.style.removeProperty('--tooltip-y');
+        }
+
+        // Intersection Observer для анімації при скролі ТІЛЬКИ на мобільних
+        let observer = null;
+        
+        function initMobileScrollEffects() {
+            const isMobile = window.innerWidth <= 768;
+            const carCards = document.querySelectorAll('.car-card');
+            
+            if (isMobile && !observer) {
+                const observerOptions = {
+                    threshold: 0.2,
+                    rootMargin: '0px 0px -100px 0px'
+                };
+
+                observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('in-view');
+                        } else {
+                            entry.target.classList.remove('in-view');
+                        }
+                    });
+                }, observerOptions);
+
+                carCards.forEach(card => observer.observe(card));
+            } else if (!isMobile && observer) {
+                observer.disconnect();
+                observer = null;
+                carCards.forEach(card => card.classList.remove('in-view'));
+            }
+        }
+
+        // Функція для додавання ефекту shimmer
+        function attachShimmerEffect() {
+            const buttons = document.querySelectorAll(".nav-btn, .buy-btn");
+            buttons.forEach((button) => {
+                // Видаляємо старі слухачі, щоб не дублювати (хоча addEventListener не дублює ідентичні, але для безпеки)
+                // Простіше просто додавати до нових елементів, але тут ми вибираємо всі.
+                // Найкраще - це просто перезаписувати onmousemove або використовувати прапорець.
+                // Але оскільки ми повністю перерендеримо елементи, то старі слухачі зникають разом з елементами.
+                // Тільки nav-btn залишаються.
+                
+                button.onmousemove = (e) => {
+                    const rect = button.getBoundingClientRect();
+                    const offsetX = e.clientX - rect.left;
+                    const percent = (offsetX / rect.width) * 100;
+                    let mapped = percent - 50;
+                    const step = 5;
+                    mapped = Math.round(mapped / step) * step;
+                    button.style.setProperty("--x", `${mapped}%`);
+                };
+                
+                button.onmouseleave = () => {
+                    button.style.setProperty("--x", `0%`);
+                };
+            });
+        }
+
+        // Функція для 3D ефекту нахилу карток
+        function init3DTiltEffect() {
+            const cards = document.querySelectorAll('.car-card');
+            
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.transition = 'all 0.1s ease';
+                });
+                
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    // Максимальний кут нахилу 5 градусів
+                    const rotateX = ((y - centerY) / centerY) * -5; 
+                    const rotateY = ((x - centerX) / centerX) * 5;
+                    
+                    // Додаємо підйом (-10px) та легке збільшення
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px) scale3d(1.02, 1.02, 1.02)`;
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transition = 'all 0.4s ease';
+                    card.style.transform = ''; // Повертаємо до CSS стану
+                });
+            });
+        }
+
+        // Ініціалізація при завантаженні сторінки
+        document.addEventListener('DOMContentLoaded', () => {
+            renderFilters();
+            renderCars();
+            initMobileScrollEffects();
+            attachShimmerEffect();
+            init3DTiltEffect();
+
+            // Обробка кліків по кольорах для мобільних пристроїв
+            document.addEventListener('click', (e) => {
+                // Якщо клік по кружечку кольору
+                if (e.target.classList.contains('color-circle')) {
+                    // Закриваємо всі інші тултіпи
+                    document.querySelectorAll('.color-circle').forEach(circle => {
+                        if (circle !== e.target) {
+                            circle.classList.remove('active');
+                        }
+                    });
+                    // Тоглим поточний
+                    e.target.classList.toggle('active');
+                } else {
+                    // Якщо клік поза кружечками - закриваємо всі
+                    document.querySelectorAll('.color-circle.active').forEach(circle => {
+                        circle.classList.remove('active');
+                    });
+                }
+            });
+        });
+        
+        window.addEventListener('resize', initMobileScrollEffects);
+    </script>
+</body>
+</html>
