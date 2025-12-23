@@ -1484,3 +1484,132 @@ footer p {
         box-sizing: border-box;
     }
 }
+
+/* Basketball Game */
+#basketball-game {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    pointer-events: none;
+    font-family: 'Orbitron', sans-serif;
+    overflow: hidden;
+    display: none; /* Hidden by default */
+}
+
+#basketball-game.active {
+    display: block;
+}
+
+.play-game-btn {
+    display: block;
+    margin: 40px auto;
+    padding: 15px 40px;
+    background: transparent;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><text y="28" font-size="28">🖕</text></svg>') 25 0, pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    z-index: 10;
+}
+
+.play-game-btn:hover {
+    background: var(--primary-color);
+    color: #000;
+    box-shadow: 0 0 20px var(--primary-color);
+    transform: translateY(-5px);
+}
+
+.desktop-only {
+    display: block;
+}
+
+@media (max-width: 1024px) {
+    .desktop-only {
+        display: none !important;
+    }
+}
+
+.hoop-container {
+    position: absolute;
+    top: 150px;
+    right: 0;
+    pointer-events: auto;
+    z-index: 1;
+    width: 200px;
+    height: 200px;
+}
+
+.game-mode {
+    user-select: none;
+    -webkit-user-select: none;
+    overflow: hidden;
+}
+
+.game-mode img {
+    -webkit-user-drag: none;
+    user-select: none;
+    pointer-events: none;
+}
+
+/* Re-enable pointer events for game elements */
+.game-mode #basketball-game,
+.game-mode .ball,
+.game-mode .play-game-btn,
+.game-mode #close-game-btn {
+    pointer-events: auto;
+}
+
+.hoop-img {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
+}
+
+.ball {
+    width: 80px;
+    height: 80px;
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    /* transform: translateX(-50%); Removed to fix hitbox alignment */
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><text y="28" font-size="28">🖕</text></svg>') 16 16, grab;
+    pointer-events: auto;
+    z-index: 1000;
+    /* No background or border radius on container, image handles it */
+}
+
+.ball-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none; /* Let clicks pass to .ball container */
+}
+
+.ball:active {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><text y="28" font-size="28">🖕</text></svg>') 16 16, grabbing;
+}
+
+.score-board {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.8);
+    color: var(--primary-color);
+    padding: 10px 20px;
+    border: 1px solid var(--primary-color);
+    border-radius: 5px;
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: 0 0 10px var(--primary-color);
+}
+

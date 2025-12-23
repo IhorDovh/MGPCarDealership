@@ -63,6 +63,23 @@
         </div>
     </footer>
 
+    <!-- Basketball Game Container -->
+    <div id="basketball-game" class="desktop-only">
+        <div class="hoop-container">
+            <img src="https://static.vecteezy.com/system/resources/thumbnails/055/239/852/small/basketball-hoop-outdoor-court-on-transparent-background-png.png" alt="Hoop" class="hoop-img">
+        </div>
+        <div class="ball" id="basketball">
+            <img src="https://static.wikia.nocookie.net/create_mod/images/0/05/Bound_Block_of_Cardboard.png/revision/latest/scale-to-width/360?cb=20250301002822" alt="Ball" class="ball-img">
+        </div>
+        <div class="score-board">Score: <span id="score">0</span></div>
+        <button id="close-game-btn" style="position: absolute; top: 20px; left: 20px; pointer-events: auto; background: rgba(0,0,0,0.8); color: #fff; border: 1px solid #fff; padding: 10px 20px; cursor: pointer; font-family: 'Orbitron', sans-serif;">EXIT GAME</button>
+    </div>
+
+    <div class="container" style="text-align: center; padding-bottom: 40px;">
+        <button id="start-game-btn" class="play-game-btn desktop-only">Зіграти в Баскетбол</button>
+    </div>
+
+    <script src="game.js"></script>
     <script>
         // Дані про автомобілі
         const carsData = [
