@@ -194,6 +194,9 @@
                     angularVelocity = 0;
                     updateBallPosition();
                     gameLoop();
+                    // Ensure UI buttons use the custom cursor while game is active
+                    if (startBtn) startBtn.style.cursor = customCursor;
+                    if (closeBtn) closeBtn.style.cursor = customCursor;
                 });
             }
 
@@ -202,6 +205,10 @@
                     gameContainer.classList.remove('active');
                     document.body.classList.remove('game-mode');
                     gameActive = false;
+                    // Reset cursors when closing the game
+                    if (startBtn) startBtn.style.cursor = '';
+                    if (closeBtn) closeBtn.style.cursor = '';
+                    document.body.style.cursor = '';
                 });
             }
 
@@ -212,6 +219,8 @@
                 isDragging = true;
                 ball.style.cursor = customCursor;
                 document.body.style.cursor = customCursor; // Force cursor on body
+                if (startBtn) startBtn.style.cursor = customCursor;
+                if (closeBtn) closeBtn.style.cursor = customCursor;
                 velocityX = 0;
                 velocityY = 0;
                 angularVelocity = 0;
@@ -253,6 +262,8 @@
                 isDragging = false;
                 ball.style.cursor = ''; // Revert to CSS
                 document.body.style.cursor = ''; // Reset cursor on body
+                if (startBtn) startBtn.style.cursor = '';
+                if (closeBtn) closeBtn.style.cursor = '';
                 
                 // Add spin based on horizontal velocity
                 angularVelocity = velocityX * 2;
