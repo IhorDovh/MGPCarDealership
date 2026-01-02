@@ -255,6 +255,28 @@ nav {
     overflow: hidden;
 }
 
+/* UnicornStudio liquid/glass background for header */
+header {
+    position: relative;
+    overflow: visible;
+}
+.header-unicorn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1200px;
+    height: 1200px;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.85;
+    mix-blend-mode: overlay;
+}
+header .container {
+    position: relative;
+    z-index: 1;
+}
+
 .hero::before {
     content: '';
     position: absolute;
