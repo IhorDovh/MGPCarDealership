@@ -73,6 +73,47 @@ header {
     box-shadow: 0 5px 30px rgba(244, 196, 48, 0.2);
 }
 
+/* Adaptive header light stripe that follows scroll/mouse */
+.header-light {
+    position: absolute;
+    top: 0;
+    left: -40%;
+    width: 80%;
+    height: 120%;
+    pointer-events: none;
+    z-index: 30;
+    mix-blend-mode: screen;
+    background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.35) 45%, rgba(255,255,255,0.18) 55%, rgba(255,255,255,0) 100%);
+    transform: translateX(var(--hl-x, 0%)) skewX(-20deg);
+    filter: blur(10px) saturate(120%);
+    opacity: var(--hl-opacity, 0.45);
+    transition: opacity 220ms linear;
+}
+
+@media (max-width: 768px) {
+    .header-light { height: 140%; left: -50%; width: 100%; filter: blur(8px); }
+}
+
+/* Slim reflective glint on the bottom edge of the header */
+.header-bottom-glint {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 8px;
+    pointer-events: none;
+    z-index: 40;
+    background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.7) 45%, rgba(255,255,255,0.45) 55%, rgba(255,255,255,0) 100%);
+    transform: translateX(var(--hb-x, 0%)) skewX(-8deg);
+    filter: blur(6px) saturate(120%);
+    opacity: var(--hb-opacity, 0.55);
+    transition: opacity 180ms linear;
+}
+
+@media (max-width: 768px) {
+    .header-bottom-glint { height: 6px; filter: blur(4px); }
+}
+
 header .container {
     display: flex;
     justify-content: space-between;
@@ -253,6 +294,22 @@ nav {
     text-align: center;
     position: relative;
     overflow: hidden;
+}
+
+/* Three.js 3D text container in hero */
+#three-text-container {
+    width: 100%;
+    height: 140px;
+    max-height: 180px;
+    margin: 0 auto 10px auto;
+    pointer-events: none; /* let mouse events pass to page */
+}
+
+.hero-fallback {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 48px;
+    letter-spacing: 6px;
+    margin-top: 8px;
 }
 
 .hero::before {
@@ -522,6 +579,36 @@ nav {
     overflow: hidden;
     border-radius: 0;
 }
+
+/* Small Three.js viewport for a diamond icon on each card */
+.diamond-viewport {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 92px;
+    height: 92px;
+    pointer-events: none; /* allow clicks through to card */
+    z-index: 6;
+}
+.diamond-viewport canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Inline diamond next to price */
+.price-with-diamond {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.diamond-inline {
+    width: 64px;
+    height: 64px;
+    pointer-events: none;
+    display: inline-block;
+}
+.diamond-inline canvas { width: 100%; height: 100%; display: block; }
 
 /* Slider styles */
 .car-slider {

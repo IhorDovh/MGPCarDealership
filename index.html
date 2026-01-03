@@ -10,6 +10,8 @@
     <div class="scanlines"></div>
     
     <header>
+        <div class="header-light" aria-hidden="true"></div>
+        <div class="header-bottom-glint" aria-hidden="true"></div>
         <div class="container">
             <div class="logo">
                 <h1>MGP<span>CAR DEALERSHIP</span></h1>
@@ -37,7 +39,7 @@
 
     <section class="hero">
         <div class="hero-content">
-            <h2>ЕКСКЛЮЗИВНІ АВТОМОБІЛІ</h2>
+            <h2 class="hero-fallback">ЕКСКЛЮЗИВНІ АВТОМОБІЛІ</h2>
             <p>Найкращі суперкари для тих, хто знає ціну швидкості</p>
         </div>
     </section>
@@ -403,6 +405,58 @@
         });
     </script>
     <script>
+    // Header light animator: maps scroll + mouse to top stripe and a slim bottom glint.
+    (function(){
+        const header = document.querySelector('header');
+        if (!header) return;
+        const light = header.querySelector('.header-light');
+        const bottom = header.querySelector('.header-bottom-glint');
+        if (!light && !bottom) return;
+
+        let mouseX = 0.5;
+        let scrollFactor = 0;
+        let raf = null;
+
+        window.addEventListener('mousemove', (e) => {
+            const w = window.innerWidth;
+            mouseX = e.clientX / Math.max(1, w);
+            if (!raf) raf = requestAnimationFrame(update);
+        }, { passive: true });
+
+        window.addEventListener('scroll', () => {
+            const docH = document.documentElement.scrollHeight - window.innerHeight;
+            scrollFactor = docH > 0 ? (window.scrollY / docH) : 0;
+            if (!raf) raf = requestAnimationFrame(update);
+        }, { passive: true });
+
+        function update(){
+            raf = null;
+            const mousePct = (mouseX - 0.5) * 120; // -60 .. +60
+            const scrollNudge = (scrollFactor - 0.5) * 60; // -30 .. +30
+            const x = mousePct + scrollNudge;
+
+            // top light: wider, blurrier
+            if (light) {
+                const opacity = 0.35 + Math.min(0.6, scrollFactor * 1.5);
+                light.style.setProperty('--hl-x', `${x}%`);
+                light.style.setProperty('--hl-opacity', `${opacity}`);
+            }
+
+            // bottom glint: smaller movement and stronger response to scroll
+            if (bottom) {
+                const bx = x * 0.45; // smaller horizontal travel
+                const bOpacity = Math.min(1, 0.4 + (scrollFactor * 1.6));
+                bottom.style.setProperty('--hb-x', `${bx}%`);
+                bottom.style.setProperty('--hb-opacity', `${bOpacity}`);
+                bottom.style.transform = `translateX(${bx}%) skewX(-8deg)`;
+            }
+        }
+
+        // initial update
+        setTimeout(() => { scrollFactor = window.scrollY / Math.max(1, document.documentElement.scrollHeight - window.innerHeight); update(); }, 80);
+    })();
+    </script>
+    <script>
         // Дані про автомобілі
         const carsData = [
             {
@@ -648,6 +702,7 @@
                     <div class="car-slider" data-car-id="${car.id}" ${car.gradient ? `data-gradient="${car.gradient}"` : ''}>
                         ${imagesHTML}
                         ${dotsHTML}
+                        <div class="slider-bottom-fade"></div>
                     </div>
                 `;
             } else {
@@ -664,11 +719,11 @@
                 <div class="price-wrapper">
                     <div class="old-price-row">
                         <span class="discount-badge">-${discountPercent}%</span>
-                        <span class="old-price">💎 ${car.oldPrice.toLocaleString()}</span>
+                        <span class="old-price">${car.oldPrice.toLocaleString()}</span>
                     </div>
-                    <span class="price">💎 ${car.price.toLocaleString()}</span>
+                    <span class="price">${car.price.toLocaleString()}</span>
                 </div>
-            ` : `<span class="price">💎 ${car.price.toLocaleString()}</span>`;
+            ` : `<span class="price">${car.price.toLocaleString()}</span>`;
             
             return `
                 <div class="car-card" ${car.gradient ? `data-car-gradient="${car.gradient}"` : ''}>
@@ -693,7 +748,10 @@
                             </div>
                         </div>
                         <div class="car-price">
-                            ${priceHTML}
+                            <div class="price-with-diamond">
+                                    <div class="diamond-inline" data-car-id="${car.id}" aria-hidden="true"></div>
+                                    ${priceHTML}
+                                </div>
                             <button class="buy-btn" onclick="buyCar(${car.id})">
                                 <span>КУПИТИ ЗАРАЗ</span>
                                 <div class="shimmer"><div></div><div></div><div></div></div>
@@ -732,6 +790,8 @@
             
             // Ініціалізуємо 3D ефект
             init3DTiltEffect();
+            // Signal that car cards are rendered so card-specific inits can run
+            document.dispatchEvent(new Event('cardsRendered'));
         }
 
         // Слайдери для автомобілів
@@ -971,6 +1031,120 @@
         });
         
         window.addEventListener('resize', initMobileScrollEffects);
+    </script>
+
+    <!-- Three.js library for card diamonds -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.154.0/build/three.min.js"></script>
+    <script>
+    // Define initializer for small diamond renderers on each card's .diamond-viewport.
+    // The function retries if Three.js isn't loaded yet and is triggered when cards are rendered.
+    (function(){
+        function initCardDiamonds() {
+            if (typeof THREE === 'undefined') {
+                // Retry shortly until library available
+                setTimeout(initCardDiamonds, 200);
+                return;
+            }
+
+            const viewports = document.querySelectorAll('.diamond-viewport, .diamond-inline');
+            if (!viewports.length) return;
+
+            viewports.forEach(vp => {
+                // avoid double-init
+                if (vp.__diamondInit) return;
+                vp.__diamondInit = true;
+
+                const isInline = vp.classList.contains('diamond-inline');
+                const w = isInline ? (vp.clientWidth || 46) : (vp.clientWidth || 92);
+                const h = isInline ? (vp.clientHeight || 46) : (vp.clientHeight || 92);
+
+                const scene = new THREE.Scene();
+                // Use a slightly different camera distance for inline small diamonds
+                const camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
+                camera.position.z = isInline ? 3.8 : 4.2;
+
+                const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+                renderer.setPixelRatio(window.devicePixelRatio || 1);
+                renderer.setSize(w, h);
+                renderer.domElement.style.display = 'block';
+                vp.appendChild(renderer.domElement);
+
+                const ambient = new THREE.AmbientLight(0xffffff, 0.55);
+                scene.add(ambient);
+                const dir = new THREE.DirectionalLight(0xffffff, 0.9);
+                dir.position.set(5, 8, 6);
+                scene.add(dir);
+
+                const baseGeo = new THREE.OctahedronGeometry(0.9, 0);
+                baseGeo.scale(1, 1.05, 0.7);
+
+                const id = parseInt(vp.dataset.carId || '0', 10);
+                // Use bluish base color for diamonds
+                const baseColor = new THREE.Color(0x66ccff);
+                // small deterministic tint by id
+                const tint = 1 + ((id % 5) - 2) * 0.03;
+                const color = baseColor.clone().multiplyScalar(tint);
+                const mat = new THREE.MeshStandardMaterial({ color: color, metalness: 0.15, roughness: 0.12, emissive: color.clone().multiplyScalar(0.06) });
+
+                const mesh = new THREE.Mesh(baseGeo, mat);
+                mesh.scale.setScalar((isInline ? 1.2 : 0.9) + ((id % 3) * 0.06));
+                scene.add(mesh);
+
+                const tmpDir = new THREE.Vector3();
+
+                let localMouse = { x: 0.5, y: 0.5 };
+                window.addEventListener('mousemove', (e) => {
+                    const rect = vp.getBoundingClientRect();
+                    localMouse.x = (e.clientX - rect.left) / rect.width;
+                    localMouse.y = (e.clientY - rect.top) / rect.height;
+                });
+
+                const clock = new THREE.Clock();
+                function animate(){
+                    const t = clock.getElapsedTime();
+                    mesh.position.y = Math.sin(t*1.7) * 0.08;
+
+                    const ndc = new THREE.Vector3((localMouse.x * 2) -1, -(localMouse.y * 2) +1, 0.5);
+                    ndc.unproject(camera);
+                    tmpDir.copy(ndc).sub(camera.position).normalize();
+                    const distance = (mesh.position.z - camera.position.z) / tmpDir.z;
+                    const worldPoint = camera.position.clone().add(tmpDir.multiplyScalar(distance));
+
+                    const lookAtMat = new THREE.Matrix4();
+                    lookAtMat.lookAt(mesh.position, worldPoint, new THREE.Vector3(0,1,0));
+                    const targetQ = new THREE.Quaternion().setFromRotationMatrix(lookAtMat);
+                    mesh.quaternion.slerp(targetQ, 0.2);
+
+                    const frontNormal = new THREE.Vector3(0,0,1).applyQuaternion(mesh.quaternion);
+                    const lightDir = dir.position.clone().normalize();
+                    const dot = Math.max(0, frontNormal.dot(lightDir));
+                    mat.emissive.setRGB(dot * 0.12, dot * 0.14, dot * 0.16);
+
+                    renderer.render(scene, camera);
+                    requestAnimationFrame(animate);
+                }
+                animate();
+
+                const ro = new ResizeObserver(() => {
+                    const rw = vp.clientWidth || 92;
+                    const rh = vp.clientHeight || 92;
+                    renderer.setSize(rw, rh);
+                    camera.aspect = rw / rh;
+                    camera.updateProjectionMatrix();
+                });
+                ro.observe(vp);
+            });
+        }
+
+        // Trigger when cards are rendered
+        document.addEventListener('cardsRendered', initCardDiamonds);
+        // Safety: attempt initialization once after load (will retry if THREE missing)
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            setTimeout(initCardDiamonds, 200);
+        } else {
+            window.addEventListener('load', () => setTimeout(initCardDiamonds, 200));
+        }
+    })();
     </script>
 </body>
 </html>
